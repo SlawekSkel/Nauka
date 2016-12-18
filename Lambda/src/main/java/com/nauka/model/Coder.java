@@ -13,16 +13,22 @@ import java.util.stream.Collectors;
 public class Coder {
 
     private String codedText;
+
     private String unCodedText;
 
     private HashMap<String, String> objectCodeBook;
+
     private HashMap<String, String> consonantCodeBook;
 
     public Coder() {
         setBooks();
     }
 
-    public String coding(String textToCode, CoderType type) {
+    public String getUnCodedText() {
+        return unCodedText;
+    }
+
+    public String coding(String textToCode, CoderType type, SpaceType space) {
 
         unCodedText = textToCode;
         List<String> textToCodeList = new ArrayList<>(Arrays.asList(unCodedText.split("")));
@@ -32,7 +38,7 @@ public class Coder {
 
         if (type.equals(CoderType.OBJECT)) {
             codedList = textToCodeList.stream()
-                    .map(x -> codeObject(x))
+                    .map(x -> codeObject(x, space))
                     .collect(Collectors.toList());
 
         } else if (type.equals(CoderType.CONSONANT)) {
@@ -44,7 +50,7 @@ public class Coder {
                 } else {
                     before = textToCodeList.get(i - 1);
                 }
-                codedList.add(codeConsonant(textToCodeList.get(i), before, next));
+                codedList.add(codeConsonant(textToCodeList.get(i), before, next, space));
             }
 
 
@@ -92,19 +98,7 @@ public class Coder {
                 } else {
                     //to do comparing list
                     resultTextList.add(tempWord);
-
-                    StringBuilder tempComparingWorld = new StringBuilder();
-                    List<String> tempList = Arrays.asList(tempWord.split(""));
-                    tempList.forEach(
-                            x -> {
-                                if (!coding(x, CoderType.CONSONANT).equals("")) {
-                                    tempComparingWorld.append(coding(x, CoderType.CONSONANT));
-                                } else {
-                                    tempComparingWorld.append("_");
-                                }
-                            }
-                    );
-                    comparingTextList.add(tempComparingWorld.toString());
+                    comparingTextList.add(coding(tempWord, CoderType.CONSONANT, SpaceType._UNDER));
 
                     fragmentBuilder.delete(0, fragmentBuilder.length());
                     workingTexOn.delete(0, i);
@@ -119,42 +113,45 @@ public class Coder {
     }
 
 
-    private String codeObject(String sign) {
+    private String codeObject(String sign, SpaceType space) {
+
+
 
         if (!sign.equals(" ") && objectCodeBook.containsKey(sign.toLowerCase())) {
             sign = objectCodeBook.get(sign);
         } else {
-            return "";
+            return space.getSpace();
         }
         return sign;
     }
 
-    private String codeConsonant(String sign, String before, String next) {
+    private String codeConsonant(String inputSign, String before, String next, SpaceType space) {
 
-        sign = sign.toLowerCase();
+        inputSign = inputSign.toLowerCase();
         before = before.toLowerCase();
         next = next.toLowerCase();
+        String outputSign;
 
-        if (!sign.equals(" ") && consonantCodeBook.containsKey(sign)) {
+        if (!inputSign.equals(" ") && consonantCodeBook.containsKey(inputSign)) {
 
-            if (sign.equals("z")) {
-                if (before.equals("s") || before.equals("c") || before.equals("r") || before.equals("d")) return "";
-            } else if (sign.equals("s")) {
-                if (next.equals("z")) return "";
-            } else if (sign.equals("c")) {
-                if (next.equals("z")) return "";
-            } else if (sign.equals("r")) {
-                if (next.equals("z")) return "";
-            } else if (sign.equals("d")) {
-                if (next.equals("z") || next.equals("ż") || next.equals("ź")) return "";
-            } else if (sign.equals("d")) {
-                if (next.equals("z")) return "";
+            if (inputSign.equals("z")) {
+                if (before.equals("s") || before.equals("c") || before.equals("r") || before.equals("d")) return space.getSpace();
+            } else if (inputSign.equals("s")) {
+                if (next.equals("z")) return space.getSpace();
+            } else if (inputSign.equals("c")) {
+                if (next.equals("z")) return space.getSpace();
+            } else if (inputSign.equals("r")) {
+                if (next.equals("z")) return space.getSpace();
+            } else if (inputSign.equals("d")) {
+                if (next.equals("z") || next.equals("ż") || next.equals("ź")) return space.getSpace();
+            } else if (inputSign.equals("d")) {
+                if (next.equals("z")) return space.getSpace();
             }
-            sign = consonantCodeBook.get(sign);
+            outputSign = consonantCodeBook.get(inputSign);
         } else {
-            return "";
+            return space.getSpace();
         }
-        return sign;
+        return outputSign;
     }
 
     private void setBooks() {

@@ -18,6 +18,10 @@ public class FileService {
     private String fileName = "test";
     private String defaultFileLocation = "D:\\Programowanie\\Git\\Nauka\\Lambda\\src\\main\\resources\\";
 
+    public String getDefaultFileLocation() {
+        return defaultFileLocation;
+    }
+
     public void setDefaultFileLocation(String defaultFileLocation) {
         this.defaultFileLocation = defaultFileLocation;
     }
@@ -92,6 +96,24 @@ public class FileService {
         }
 
         return rowDictionary;
+    }
+
+    public void saveFile(String fileName, String insert, Boolean append) {
+
+        createFile(fileName);
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(getDefaultFileLocation() + fileName, append))) {
+
+            if (append) {
+                LOG.info("Adding text to new line ");
+                writer.newLine();
+            } else LOG.info("Cleaning a file and adding new text");
+            writer.write(insert);
+
+        } catch (IOException e) {
+            LOG.error("Writing Error !");
+        }
+
+
     }
 
 
