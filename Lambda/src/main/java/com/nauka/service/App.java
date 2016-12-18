@@ -10,7 +10,7 @@ public class App {
 
     public static void main(String[] args) {
 
-        String numberToRemember = "2302749372926809711515325253676573543432";
+        String numberToRemember = "domkotpies";
         String result;
 
         FileService fileServiceA = new FileService();

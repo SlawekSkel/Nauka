@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 public class Coder {
 
     private String codedText;
+    private String unCodedText;
 
     private HashMap<String, String> objectCodeBook;
     private HashMap<String, String> consonantCodeBook;
@@ -23,7 +24,8 @@ public class Coder {
 
     public String coding(String textToCode, CoderType type) {
 
-        List<String> textToCodeList = new ArrayList<>(Arrays.asList(textToCode.split("")));
+        unCodedText = textToCode;
+        List<String> textToCodeList = new ArrayList<>(Arrays.asList(unCodedText.split("")));
         List<String> codedList = new ArrayList<>();
         String before, next;
         next = "";
@@ -59,11 +61,15 @@ public class Coder {
 
     public String getCodedText(String textToCode, Dictionary dictionary) {
 
+        unCodedText = textToCode;
         List<String> resultTextList = new ArrayList<>();
+        List<String> comparingTextList = new ArrayList<>();
         StringBuilder fragmentBuilder = new StringBuilder();
-        StringBuilder workingTexOn = new StringBuilder(textToCode);
+        StringBuilder workingTexOn = new StringBuilder(unCodedText);
 
         String tempWord;
+
+
         int max = 10;
         boolean searchingCode = true;
 
@@ -84,7 +90,22 @@ public class Coder {
                 if (tempWord == null) {
                     fragmentBuilder.deleteCharAt(i - 1);
                 } else {
+                    //to do comparing list
                     resultTextList.add(tempWord);
+
+                    StringBuilder tempComparingWorld = new StringBuilder();
+                    List<String> tempList = Arrays.asList(tempWord.split(""));
+                    tempList.forEach(
+                            x -> {
+                                if (!coding(x, CoderType.CONSONANT).equals("")) {
+                                    tempComparingWorld.append(coding(x, CoderType.CONSONANT));
+                                } else {
+                                    tempComparingWorld.append("_");
+                                }
+                            }
+                    );
+                    comparingTextList.add(tempComparingWorld.toString());
+
                     fragmentBuilder.delete(0, fragmentBuilder.length());
                     workingTexOn.delete(0, i);
                     i = -1;
@@ -92,7 +113,9 @@ public class Coder {
             }
         }
 
-        return resultTextList.toString();
+        unCodedText = comparingTextList.toString();
+        codedText = resultTextList.toString();
+        return codedText;
     }
 
 
