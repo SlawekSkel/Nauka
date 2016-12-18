@@ -2,7 +2,6 @@ package com.nauka.Lambda;
 
 
 import java.io.File;
-import java.io.FilenameFilter;
 
 public class Lambda {
 
@@ -18,7 +17,9 @@ public class Lambda {
 //        }
 //    });
 
-    static  String [] filelist = dir.list( (f,s) -> { return s.endsWith(".txt"); } );
+    static String[] filelist = dir.list((f, s) -> {
+        return s.endsWith(".txt");
+    });
 
     public static void main(String[] args) {
 
