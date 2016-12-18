@@ -33,7 +33,7 @@ public class Dictionary {
         Coder coder = new Coder();
         //TODO : dodanie do mapy odwrotności
         wordSet.forEach(
-                (x) -> dictionaryMap.put(coder.coding(x, CoderType.CONSONANT,SpaceType.NONE), x)
+                (x) -> dictionaryMap.put(coder.coding(x, CoderType.CONSONANT), x)
         );
 
         dictionaryMap.remove("");

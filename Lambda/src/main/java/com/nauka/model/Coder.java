@@ -13,22 +13,38 @@ import java.util.stream.Collectors;
 public class Coder {
 
     private String codedText;
-
     private String unCodedText;
+    private SpaceType spaceType;
 
     private HashMap<String, String> objectCodeBook;
-
     private HashMap<String, String> consonantCodeBook;
+
+    public HashMap<String, String> getObjectCodeBook() {
+        return objectCodeBook;
+    }
+    public HashMap<String, String> getConsonantCodeBook() {
+        return consonantCodeBook;
+    }
 
     public Coder() {
         setBooks();
+        setSpaceType(SpaceType.NONE);
     }
+
+    public SpaceType getSpaceType() {
+        return spaceType;
+    }
+    public void setSpaceType(SpaceType spaceType) {
+        this.spaceType = spaceType;
+    }
+
+
 
     public String getUnCodedText() {
         return unCodedText;
     }
 
-    public String coding(String textToCode, CoderType type, SpaceType space) {
+    public String coding(String textToCode, CoderType type) {
 
         unCodedText = textToCode;
         List<String> textToCodeList = new ArrayList<>(Arrays.asList(unCodedText.split("")));
@@ -38,7 +54,7 @@ public class Coder {
 
         if (type.equals(CoderType.OBJECT)) {
             codedList = textToCodeList.stream()
-                    .map(x -> codeObject(x, space))
+                    .map(x -> codeObject(x))
                     .collect(Collectors.toList());
 
         } else if (type.equals(CoderType.CONSONANT)) {
@@ -50,7 +66,7 @@ public class Coder {
                 } else {
                     before = textToCodeList.get(i - 1);
                 }
-                codedList.add(codeConsonant(textToCodeList.get(i), before, next, space));
+                codedList.add(codeConsonant(textToCodeList.get(i), before, next));
             }
 
 
@@ -74,8 +90,6 @@ public class Coder {
         StringBuilder workingTexOn = new StringBuilder(unCodedText);
 
         String tempWord;
-
-
         int max = 10;
         boolean searchingCode = true;
 
@@ -98,7 +112,7 @@ public class Coder {
                 } else {
                     //to do comparing list
                     resultTextList.add(tempWord);
-                    comparingTextList.add(coding(tempWord, CoderType.CONSONANT, SpaceType._UNDER));
+                    comparingTextList.add(coding(tempWord, CoderType.CONSONANT));
 
                     fragmentBuilder.delete(0, fragmentBuilder.length());
                     workingTexOn.delete(0, i);
@@ -113,19 +127,18 @@ public class Coder {
     }
 
 
-    private String codeObject(String sign, SpaceType space) {
-
+    private String codeObject(String sign) {
 
 
         if (!sign.equals(" ") && objectCodeBook.containsKey(sign.toLowerCase())) {
             sign = objectCodeBook.get(sign);
         } else {
-            return space.getSpace();
+            return spaceType.getSpace();
         }
         return sign;
     }
 
-    private String codeConsonant(String inputSign, String before, String next, SpaceType space) {
+    private String codeConsonant(String inputSign, String before, String next) {
 
         inputSign = inputSign.toLowerCase();
         before = before.toLowerCase();
@@ -135,21 +148,22 @@ public class Coder {
         if (!inputSign.equals(" ") && consonantCodeBook.containsKey(inputSign)) {
 
             if (inputSign.equals("z")) {
-                if (before.equals("s") || before.equals("c") || before.equals("r") || before.equals("d")) return space.getSpace();
+                if (before.equals("s") || before.equals("c") || before.equals("r") || before.equals("d"))
+                    return spaceType.getSpace();
             } else if (inputSign.equals("s")) {
-                if (next.equals("z")) return space.getSpace();
+                if (next.equals("z")) return spaceType.getSpace();
             } else if (inputSign.equals("c")) {
-                if (next.equals("z")) return space.getSpace();
+                if (next.equals("z")) return spaceType.getSpace();
             } else if (inputSign.equals("r")) {
-                if (next.equals("z")) return space.getSpace();
+                if (next.equals("z")) return spaceType.getSpace();
             } else if (inputSign.equals("d")) {
-                if (next.equals("z") || next.equals("ż") || next.equals("ź")) return space.getSpace();
+                if (next.equals("z") || next.equals("ż") || next.equals("ź")) return spaceType.getSpace();
             } else if (inputSign.equals("d")) {
-                if (next.equals("z")) return space.getSpace();
+                if (next.equals("z")) return spaceType.getSpace();
             }
             outputSign = consonantCodeBook.get(inputSign);
         } else {
-            return space.getSpace();
+            return spaceType.getSpace();
         }
         return outputSign;
     }
